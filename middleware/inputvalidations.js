@@ -467,21 +467,7 @@ exports.JobsValidate = [
   .withMessage('Transporter contact field required!')
   .isMobilePhone()
   .withMessage('Valid transporter contact number required!'),
-    
-    //Check if transporter phone already exists
-    check('tcontact').custom((val,{req})=>{
-      return new Promise((resolve, reject) => {
-          Jobs.findOne({tcontact: val}, function(err, res){
-            if(err) {
-              reject(new Error('Server Error'))
-            }
-            if(Boolean(res)) {
-              reject(new Error('Transporter contact already in use'))
-            }
-            resolve(true)
-          });
-      })
-    }),
+
 
   //Bags Validation
   check('bags')
@@ -490,7 +476,7 @@ exports.JobsValidate = [
   .withMessage('Bags field required!')
   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
-  //Bags Validation
+  //Destination Validation
   check('destination')
   .escape()
   .notEmpty()
@@ -504,7 +490,7 @@ exports.JobsValidate = [
  .withMessage('Truck number field required')
  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
-  //Transporter Validation
+  //Driver Validation
   check('driver')
   .escape()
   .notEmpty()
@@ -517,21 +503,7 @@ exports.JobsValidate = [
   .withMessage('Driver contact field required!')
   .isMobilePhone()
   .withMessage('Valid contact number required!'),
-  
-  //Check if phone exists
-  check('dcontact').custom((val,{req})=>{
-    return new Promise((resolve, reject) => {
-        Drivers.findOne({dcontact: val}, function(err, user){
-          if(err) {
-            reject(new Error('Server Error'))
-          }
-          if(Boolean(user)) {
-            reject(new Error('Driver contact already in use'))
-          }
-          resolve(true)
-        });
-    })
-  }),
+
 
   //LICENSE validation
   check('license')
@@ -540,19 +512,32 @@ exports.JobsValidate = [
   .withMessage('License field required')
   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
-  //LICENSE validation
-  check('fuel')
-  .escape()
-  .notEmpty()
-  .withMessage('Fuel field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
-  //LICENSE validation
-  check('fuelstation')
-  .escape()
-  .notEmpty()
-  .withMessage('Fuel station field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/), 
+
+
+
+
+  //Check if phone exists
+  check('fuel').custom((val,{req})=>{
+
+    return new Promise((resolve, reject) => {
+
+      if(val) {
+        if(!req.body.fuelstation){
+          reject(new Error('Fuel Station field required!'))
+        }
+      }
+      else if(req.body.fuelstation){
+        if(!val){
+          reject(new Error('Fuel field required!'))
+        }
+      } 
+      else{
+        resolve(true)
+      }
+    })
+
+  }),
 
   //LICENSE validation
   check('date')
@@ -571,131 +556,108 @@ exports.JobsValidate = [
 *BEGIN EDIT JOBS REGISTRATION VALIDATION
 ####################################*/
 exports.EditJobsValidate = [
+ //Fullname Validation
+ check('fullname')
+ .escape()
+ .notEmpty()
+ .withMessage('Client\'s Name field required')
+ .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
-   //Fullname Validation
-   check('fullname')
-   .escape()
-   .notEmpty()
-   .withMessage('Client\'s Name field required')
-   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
- 
-   //Transporter Validation
-   check('transporter')
-   .escape()
-   .notEmpty()
-   .withMessage('Transporter field required')
-   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
- 
-   //Transporter contact validation
-   check('tcontact')
-   .notEmpty()
-   .withMessage('Transporter contact field required!')
-   .isMobilePhone()
-   .withMessage('Valid transporter contact number required!'),
-     
-    
-   check('tcontact').custom((val,{req})=>{
-    const id = req.body.id
-    return new Promise((resolve, reject) => {
-    Jobs.find({$and: [{tcontact: {$eq : val}},{_id: {$ne: id}}]},
-          function(err,res){
-          if(err) {
-            reject(new Error('Server Error'))
-          }
-          if(res.length > 0) {
-            reject(new Error('Transporter contact already in use'))
-          }
-          resolve(true)
-        });
-    })
+ //Transporter Validation
+ check('transporter')
+ .escape()
+ .notEmpty()
+ .withMessage('Transporter field required')
+ .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
-  }),
+ //Transporter contact validation
+ check('tcontact')
+ .notEmpty()
+ .withMessage('Transporter contact field required!')
+ .isMobilePhone()
+ .withMessage('Valid transporter contact number required!'),
 
 
+ //Bags Validation
+ check('bags')
+ .escape()
+ .notEmpty()
+ .withMessage('Bags field required!')
+ .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+ //Destination Validation
+ check('destination')
+ .escape()
+ .notEmpty()
+ .withMessage('Destination field required!')
+ .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+//Residence validation
+check('trucknumber')
+.escape()
+.notEmpty()
+.withMessage('Truck number field required')
+.matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+ //Driver Validation
+ check('driver')
+ .escape()
+ .notEmpty()
+ .withMessage('Driver field required')
+ .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+ //Dcontact validation
+ check('dcontact')
+ .notEmpty()
+ .withMessage('Driver contact field required!')
+ .isMobilePhone()
+ .withMessage('Valid contact number required!'),
+
+
+ //LICENSE validation
+ check('license')
+ .escape()
+ .notEmpty()
+ .withMessage('License field required')
+ .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
 
 
 
-   //Bags Validation
-   check('bags')
-   .escape()
-   .notEmpty()
-   .withMessage('Bags field required!')
-   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
- 
-   //Bags Validation
-   check('destination')
-   .escape()
-   .notEmpty()
-   .withMessage('Destination field required!')
-   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
- 
-  //Residence validation
-  check('trucknumber')
-  .escape()
-  .notEmpty()
-  .withMessage('Truck number field required!')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
- 
-   //Transporter Validation
-   check('driver')
-   .escape()
-   .notEmpty()
-   .withMessage('Driver field required')
-   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
- 
-   //Dcontact validation
-   check('dcontact')
-   .notEmpty()
-   .withMessage('Driver contact field required!')
-   .isMobilePhone()
-   .withMessage('Valid contact number required!'),
-   
-  //Check if phone exists
-  check('dcontact').custom((val,{req})=>{
-    const id = req.body.id
-    return new Promise((resolve, reject) => {
-    Jobs.find({$and: [{dcontact: {$eq : val}},{_id: {$ne: id}}]},
-          function(err,res){
-          if(err) {
-            reject(new Error('Server Error'))
-          }
-          if(res.length > 0) {
-            reject(new Error('Driver contact already in use'))
-          }
-          resolve(true)
-        });
-    })
 
-  }),
- 
-   //LICENSE validation
-   check('license')
-   .escape()
-   .notEmpty()
-   .withMessage('License field required')
-   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
- 
-   //LICENSE validation
-   check('fuel')
-   .escape()
-   .notEmpty()
-   .withMessage('Fuel field required')
-   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
- 
-   //LICENSE validation
-   check('fuelstation')
-   .escape()
-   .notEmpty()
-   .withMessage('Fuel station field required')
-   .matches(/^[A-Za-z0-9 .,'!&-]+$/), 
- 
-   //LICENSE validation
-   check('date')
-   .notEmpty()
-   .withMessage('Date field required')
-   .isDate()
-   .withMessage('Valid date required!')
+
+ //Check if phone exists
+ check('fuel').custom((val,{req})=>{
+
+   return new Promise((resolve, reject) => {
+
+     if(val) {
+       if(!req.body.fuelstation){
+         reject(new Error('Fuel Station field required!'))
+       }
+     }
+     else if(req.body.fuelstation){
+       if(!val){
+         reject(new Error('Fuel field required!'))
+       }
+     } 
+     else{
+       resolve(true)
+     }
+   })
+
+ }),
+
+
+
+
+
+ //LICENSE validation
+ check('date')
+ .notEmpty()
+ .withMessage('Date field required')
+ .isDate()
+ .withMessage('Valid date required!')
 
 ]
 /*####################################

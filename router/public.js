@@ -1,8 +1,16 @@
 const express = require('express')
 const router = express.Router()
-const {register,users,edituser,deleteuser,savejobs,getjobs,editjobs,deletejobs,gethistory,gettransporters,addtransporters,deletetransporters,edittransporters,getdrivers, adddrivers,deletedrivers, editdrivers} = require('../controller/public')
+const {gethistory,register,users,edituser,deleteuser,addjobs,getjobs,editjobs,deletejobs,gettransporters,addtransporters,deletetransporters,edittransporters,getdrivers, adddrivers,deletedrivers, editdrivers} = require('../controller/public')
 const validationsres = require('../middleware/validationsres')
 const {RegValidate,EditRegValidate,DriversValidate, EditDriversValidate,TransValidate,EditTransValidate,JobsValidate,EditJobsValidate} = require('../middleware/inputvalidations')
+
+/*########################################
+BEGIN HISTORY
+########################################*/
+router.get('/gethistory', gethistory)
+/*########################################
+END HISTORY
+########################################*/
 
 /*########################################
 BEGIN USERS CRUD OPERATIONS
@@ -19,9 +27,9 @@ END USERS CRUD OPERATIONS
 BEGIN JOBS CRUD OPERATIONS
 ########################################*/
 router.get('/getjobs', getjobs)
-router.post('/savejobs',JobsValidate,validationsres,savejobs)
+router.post('/addjobs',JobsValidate,validationsres,addjobs)
 router.put('/editjobs',EditJobsValidate,validationsres,editjobs)
-router.delete('/deletejobs',deletejobs)
+router.delete('/deletejobs/:id',deletejobs)
 /*########################################
 END JOBS CRUD OPERATIONS
 ########################################*/

@@ -270,7 +270,7 @@ exports.getjobs = async (req,res,next)=>{
     }
 }
 
-exports.savejobs = async (req,res,next)=>{
+exports.addjobs = async (req,res,next) => {
 const {
     fullname,
     transporter,
@@ -291,6 +291,7 @@ const {
 
 
 try{
+    console.log('Hi')
     const jobsp = await Jobs.create({
         fullname,
         transporter,
@@ -309,30 +310,15 @@ try{
         creatorphone
     })
 
-if(!jobsp){
-    return next(new ErrorResponse("Data could not be saved!", 400))
-}
 
-jobsp.capitalize()
-const id = jobsp.getid()
-jobsp.save()
+    if(!jobsp){
+        return next(new ErrorResponse("Data could not be saved!", 400))
+    }
 
-try{
-    const act = `${bags} to ${destination}`
-const hist = await History.create({
-    user: createdby,
-    activity: `added Waybill of ${act}`,
-    activityid: id
-})
-}
-catch(err){
-    next(err)
-}
-res.json({
-    success: true,
-    mess: "Data saved successfully!",
-    data: jobsp
-})
+
+
+
+    res.json({success: true, mess: "Data saved successfully!"})
 
 }
 catch(err){
