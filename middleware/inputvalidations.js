@@ -1,5 +1,6 @@
 const Users = require('../model/Users')
 const Drivers = require('../model/Drivers')
+const Trucks = require('../model/Trucks')
 const Transporters = require('../model/Transporters')
 const Jobs = require('../model/Jobs')
 const {check} = require('express-validator')
@@ -232,41 +233,10 @@ exports.DriversValidate = [
   .withMessage('License field required')
   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
-  //Role validation
-  check('transporter')
-  .escape()
-  .notEmpty()
-  .withMessage('Transporter field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-  
-
-  //Residence validation
-  check('trucknumber')
-  .escape()
-  .notEmpty()
-  .withMessage('Truck number field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-
-    //Check if phone exists
-    check('trucknumber').custom((val,{req})=>{
-      return new Promise((resolve, reject) => {
-          Drivers.findOne({trucknumber: val}, function(err, res){
-            if(err) {
-              reject(new Error('Server Error'))
-            }
-            if(Boolean(res)) {
-              reject(new Error('Truck Number already in use'))
-            }
-            resolve(true)
-          });
-      })
-    }),
-
 ]
 /*####################################
 *END USERS REGISTRATION VALIDATION
 ####################################*/
-
 
 
 /*####################################
@@ -315,6 +285,91 @@ exports.EditDriversValidate = [
   .withMessage('License field required')
   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
+]
+/*####################################
+*END EDIT DRIVERS REGISTRATION VALIDATION
+####################################*/
+
+
+
+/*####################################
+*BEGIN TRUCKS REGISTRATION VALIDATION
+####################################*/
+exports.TrucksValidate = [
+
+  //Role validation
+  check('truckname')
+  .escape()
+  .notEmpty()
+  .withMessage('Truck name field required')
+  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+    //Dcontact validation
+    check('tcontact')
+    .notEmpty()
+    .withMessage('Transporter contact field required!')
+    .isMobilePhone()
+    .withMessage('Valid contact number required!'),
+  
+
+  //Role validation
+  check('transporter')
+  .escape()
+  .notEmpty()
+  .withMessage('Transporter field required')
+  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+  
+
+  //Residence validation
+  check('trucknumber')
+  .escape()
+  .notEmpty()
+  .withMessage('Truck number field required')
+  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+    //Check if phone exists
+    check('trucknumber').custom((val,{req})=>{
+      return new Promise((resolve, reject) => {
+        Trucks.findOne({trucknumber: val}, function(err, res){
+            if(err) {
+              reject(new Error('Server Error'))
+            }
+            if(Boolean(res)) {
+              reject(new Error('Truck Number already in use'))
+            }
+            resolve(true)
+          });
+      })
+    })
+
+]
+/*####################################
+*END TRUCKS REGISTRATION VALIDATION
+####################################*/
+
+
+
+/*####################################
+*BEGIN EDIT TRUCKS REGISTRATION VALIDATION
+####################################*/
+exports.EditTrucksValidate = [
+
+  //Role validation
+  check('truckname')
+  .escape()
+  .notEmpty()
+  .withMessage('Truck name field required')
+  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+  
+  //Dcontact validation
+  check('tcontact')
+  .notEmpty()
+  .withMessage('Transporter contact field required!')
+  .isMobilePhone()
+  .withMessage('Valid contact number required!'),
+
+
+
   //Role validation
   check('transporter')
   .escape()
@@ -335,8 +390,7 @@ exports.EditDriversValidate = [
     check('trucknumber').custom((val,{req})=>{
       const id = req.body.id
       return new Promise((resolve, reject) => {
-        console.log(val)
-      Drivers.find({$and: [{trucknumber: {$eq : val}},{_id: {$ne: id}}]},
+        Trucks.find({$and: [{trucknumber: {$eq : val}},{_id: {$ne: id}}]},
             function(err,driv){
             
             if(err) {
@@ -349,12 +403,51 @@ exports.EditDriversValidate = [
           });
       })
   
-    }),
+    })
 
 ]
 /*####################################
-*END EDIT DRIVERS REGISTRATION VALIDATION
+*END EDIT TRUCKS REGISTRATION VALIDATION
 ####################################*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -371,6 +464,7 @@ exports.TransValidate = [
   .notEmpty()
   .withMessage('Transporter field required!')
   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
 
   //Dcontact validation
   check('tcontact')
@@ -393,6 +487,7 @@ exports.TransValidate = [
         });
     })
   })
+
 ]
 /*####################################
 *END TRANSPORTERS VALIDATION
@@ -514,37 +609,13 @@ exports.JobsValidate = [
 
 
 
-
-
-
-  //Check if phone exists
-  check('fuel').custom((val,{req})=>{
-
-    return new Promise((resolve, reject) => {
-
-      if(val) {
-        if(!req.body.fuelstation){
-          reject(new Error('Fuel Station field required!'))
-        }
-      }
-      else if(req.body.fuelstation){
-        if(!val){
-          reject(new Error('Fuel field required!'))
-        }
-      } 
-      else{
-        resolve(true)
-      }
-    })
-
-  }),
-
   //LICENSE validation
   check('date')
   .notEmpty()
   .withMessage('Date field required')
   .isDate()
-  .withMessage('Valid date required!')
+  .withMessage('Valid date required!'),
+
 ]
 /*####################################
 *END JOBS VALIDATION
@@ -622,42 +693,10 @@ check('trucknumber')
  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
 
-
-
-
-
- //Check if phone exists
- check('fuel').custom((val,{req})=>{
-
-   return new Promise((resolve, reject) => {
-
-     if(val) {
-       if(!req.body.fuelstation){
-         reject(new Error('Fuel Station field required!'))
-       }
-     }
-     else if(req.body.fuelstation){
-       if(!val){
-         reject(new Error('Fuel field required!'))
-       }
-     } 
-     else{
-       resolve(true)
-     }
-   })
-
- }),
-
-
-
-
-
  //LICENSE validation
  check('date')
  .notEmpty()
- .withMessage('Date field required')
- .isDate()
- .withMessage('Valid date required!')
+ .withMessage('Date field required'),
 
 ]
 /*####################################

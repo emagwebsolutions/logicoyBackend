@@ -14,19 +14,6 @@ const DriverSchema = new mongoose.Schema({
         type: String,
         require: [true,"Driver License field required!"]
     },
-    transporter: {
-        type: String,
-        required: [true,"Transporter field required!"]
-    },
-    tcontact: {
-        type: String,
-        required: [true,"Transporter contact field required!"],
-        minlength: 10
-    },
-    trucknumber: {
-        type: String,
-        required: [true,"Truck number field required!"]
-    },
     date: {
         type: Date,
         default: Date.now

@@ -6,7 +6,7 @@ app.use(cors())
 const errorHandler = require("./error/error")
 const DBConnect = require('./config/db')
 
-
+app.use(express.urlencoded({extended:false}));
 app.use(express.json())
 
 DBConnect()

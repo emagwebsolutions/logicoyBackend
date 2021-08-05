@@ -1,6 +1,7 @@
 const Users = require('../model/Users')
 const Jobs = require('../model/Jobs')
 const Drivers = require('../model/Drivers')
+const Trucks = require('../model/Trucks')
 const Transporters = require('../model/Transporters')
 const History = require('../model/History')
 const ErrorResponse = require('../error/errorResponse')
@@ -22,16 +23,52 @@ BEGIN TRANSPORTERS CRUD OPERATIONS
 exports.addtransporters = async (req,res,next)=>{
     const {
         transporter,
+        email,
         tcontact,
+        contactp,
         creatorid,
         createdby,
         creatorphone
     } = req.body
 
+
+    //Email validation
+    if(email){
+        var re = /\S+@\S+\.\S+/;
+        if (re.test(email)) {
+            try{
+                const fnd = await Transporters.findOne({email})
+                if(fnd){
+                    res.json({success: false, mess: 'Email is already in use!'})
+                    return
+                }
+            }
+            catch(err){
+                next(err)
+            }
+        }
+        else{
+            res.json({success:false, mess: 'Valid email required!'})
+            return 
+        }
+    }
+
+
+    //Validate contact person 
+    if(contactp) {
+        if(!contactp.match(/^[-_ a-zA-Z0-9]+$/)){
+           res.json({success: false, mess : 'Valid Contact person required!'})
+           return 
+        }
+    }
+
+
     try{
         const user = await Transporters.create({
             transporter,
+            email,
             tcontact,
+            contactp,
             creatorid,
             createdby,
             creatorphone
@@ -46,7 +83,9 @@ exports.addtransporters = async (req,res,next)=>{
  exports.edittransporters = async (req,res,next)=>{
     const {
         transporter,
+        email,
         tcontact,
+        contactp,
         id,
         creatorid,
         createdby,
@@ -56,7 +95,9 @@ exports.addtransporters = async (req,res,next)=>{
     try{
         const user = await Transporters.findByIdAndUpdate(id, {
             transporter,
+            email,
             tcontact,
+            contactp,
             creatorid,
             createdby,
             creatorphone
@@ -102,9 +143,6 @@ exports.adddrivers = async (req,res,next)=>{
         dcontact,
         driver,
         license,
-        transporter,
-        trucknumber,
-        tcontact,
         creatorid,
         createdby,
         creatorphone
@@ -117,9 +155,6 @@ exports.adddrivers = async (req,res,next)=>{
             dcontact,
             driver,
             license,
-            transporter,
-            trucknumber,
-            tcontact,
             creatorid,
             createdby,
             creatorphone
@@ -136,9 +171,6 @@ exports.adddrivers = async (req,res,next)=>{
         dcontact,
         driver,
         license,
-        transporter,
-        trucknumber,
-        tcontact,
         id,
         creatorid,
         createdby,
@@ -151,9 +183,6 @@ exports.adddrivers = async (req,res,next)=>{
             dcontact,
             driver,
             license,
-            transporter,
-            trucknumber,
-            tcontact,
             creatorid,
             createdby,
             creatorphone
@@ -178,6 +207,115 @@ exports.deletedrivers = async (req,res,next)=>{
 /*#############################################
 END DRIVERS CRUD OPERATIONS
 #############################################*/
+
+
+/*#############################################
+BEGIN TRUCKS CRUD OPERATIONS
+#############################################*/
+exports.gettrucks = async (req,res,next)=>{
+    try{
+        const trucks = await Trucks.find().sort({"_id":-1})
+        res.json({success:true, trucks})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+exports.addtrucks = async (req,res,next)=>{
+    const {
+        truckname,
+        tcontact,
+        transporter,
+        trucknumber,
+        creatorid,
+        createdby,
+        creatorphone
+    
+    } = req.body
+
+
+    try{
+        const user = await Trucks.create({
+            truckname,
+            tcontact,
+            transporter,
+            trucknumber,
+            creatorid,
+            createdby,
+            creatorphone
+        })
+        res.json({success:true,mess:"Truck added successfully!"})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+ exports.edittrucks = async (req,res,next)=>{
+    const {
+        truckname,
+        tcontact,
+        transporter,
+        trucknumber,
+        id,
+        creatorid,
+        createdby,
+        creatorphone
+    } = req.body
+  
+    try{
+        const user = await Trucks.findByIdAndUpdate(id, {
+            truckname,
+            tcontact,
+            transporter,
+            trucknumber,
+            creatorid,
+            createdby,
+            creatorphone
+        })
+        res.json({success:true,mess:"Trucks details updated!"})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+exports.deletetrucks = async (req,res,next)=>{
+    const id = req.params.id
+    try{
+        const trucks = await Trucks.findByIdAndDelete(id)
+        res.json({success: true, mess: id})
+    }
+    catch(err){
+        next(err)
+    }
+}
+/*#############################################
+END TRUCKS CRUD OPERATIONS
+#############################################*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*#############################################
@@ -289,9 +427,27 @@ const {
     creatorphone
 } = req.body
 
+/*--------------------------------------
+BEGIN FUEL AND FUEL STATION VALIDATION
+--------------------------------------*/
+if(fuel) {
+    if(!fuelstation){
+      res.json({success: false, mess: 'Fuel Station field required!'})
+      return 
+    }
+}
+if(fuelstation){
+    if(!fuel){
+      res.json({success: false, mess: 'Fuel field required!'})
+      return
+    }
+}
+/*--------------------------------------
+END FUEL AND FUEL STATION VALIDATION
+--------------------------------------*/
 
 try{
-    console.log('Hi')
+
     const jobsp = await Jobs.create({
         fullname,
         transporter,
@@ -315,7 +471,23 @@ try{
         return next(new ErrorResponse("Data could not be saved!", 400))
     }
 
+    jobsp.capitalize()
+    const id = jobsp.getid()
+    jobsp.save()
 
+
+    try{
+        const act = `${bags} to ${destination}`
+    const hist = await History.create({
+        user: createdby,
+        activity: `added Waybill of ${act}`,
+        activityid: id
+    })
+    }
+    catch(err){
+        next(err)
+    }
+    
 
 
     res.json({success: true, mess: "Data saved successfully!"})
@@ -362,6 +534,27 @@ exports.editjobs = async (req,res,next)=>{
     } = req.body
     
     
+/*--------------------------------------
+BEGIN FUEL AND FUEL STATION VALIDATION
+--------------------------------------*/
+if(fuel) {
+    if(!fuelstation){
+      res.json({success: false, mess: 'Fuel Station field required!'})
+      return 
+    }
+}
+if(fuelstation){
+    if(!fuel){
+      res.json({success: false, mess: 'Fuel field required!'})
+      return
+    }
+}
+/*--------------------------------------
+END FUEL AND FUEL STATION VALIDATION
+--------------------------------------*/
+
+
+
     try{
         const jobsp = await Jobs.findByIdAndUpdate(id, {
             fullname,

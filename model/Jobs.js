@@ -45,13 +45,13 @@ const JobsSchema = new mongoose.Schema({
     fuelstation: {
         type: String
     },
-    payment: {
-        type: String,
-        require: [true,"Payment field required!"]
-    },
     date: {
         type: Date,
         require: [true,"Date field required!"]
+    },
+    approved: {
+        type: String,
+        default: "No"
     },
     creatorid: String,
     createdby: String,

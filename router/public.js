@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const {gethistory,register,users,edituser,deleteuser,addjobs,getjobs,editjobs,deletejobs,gettransporters,addtransporters,deletetransporters,edittransporters,getdrivers, adddrivers,deletedrivers, editdrivers} = require('../controller/public')
+const {gethistory,register,users,edituser,deleteuser,addjobs,getjobs,editjobs,deletejobs,gettransporters,addtransporters,deletetransporters,edittransporters,getdrivers, adddrivers,deletedrivers, gettrucks, addtrucks,edittrucks,deletetrucks,editdrivers} = require('../controller/public')
 const validationsres = require('../middleware/validationsres')
-const {RegValidate,EditRegValidate,DriversValidate, EditDriversValidate,TransValidate,EditTransValidate,JobsValidate,EditJobsValidate} = require('../middleware/inputvalidations')
+const {RegValidate,EditRegValidate,TrucksValidate, EditTrucksValidate,DriversValidate, EditDriversValidate,TransValidate,EditTransValidate,JobsValidate,EditJobsValidate} = require('../middleware/inputvalidations')
 
 /*########################################
 BEGIN HISTORY
@@ -43,6 +43,18 @@ router.delete('/deletedrivers/:id',deletedrivers)
 router.put('/editdrivers', EditDriversValidate, validationsres, editdrivers)
 /*########################################
 END DRIVERS CRUD OPERATIONS
+########################################*/
+
+
+/*########################################
+BEGIN TRUCKS CRUD OPERATIONS
+########################################*/
+router.get('/gettrucks', gettrucks)
+router.post('/addtrucks', TrucksValidate, validationsres, addtrucks)
+router.delete('/deletetrucks/:id',deletetrucks)
+router.put('/edittrucks', EditTrucksValidate, validationsres, edittrucks)
+/*########################################
+END TRUCKS CRUD OPERATIONS
 ########################################*/
 
 

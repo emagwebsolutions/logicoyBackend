@@ -5,10 +5,16 @@ const TransportersSchema = new mongoose.Schema({
         type: String,
         required: [true,"Transporter field required!"]
     },
+    email: {
+        type: String
+      },
     tcontact: {
         type: String,
         required: [true,"Transporter contact field required!"],
         minlength: 10
+    },
+    contactp: {
+        type: String
     },
     date: {
         type: Date,
