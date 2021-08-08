@@ -3,6 +3,39 @@ const router = express.Router()
 const {gethistory,register,users,edituser,deleteuser,addjobs,getjobs,editjobs,deletejobs,gettransporters,addtransporters,deletetransporters,edittransporters,getdrivers, adddrivers,deletedrivers, gettrucks, addtrucks,edittrucks,deletetrucks,editdrivers} = require('../controller/public')
 const validationsres = require('../middleware/validationsres')
 const {RegValidate,EditRegValidate,TrucksValidate, EditTrucksValidate,DriversValidate, EditDriversValidate,TransValidate,EditTransValidate,JobsValidate,EditJobsValidate} = require('../middleware/inputvalidations')
+const moment = require("moment")
+const ymd = require("../middleware/DateFormats")
+
+const Jobs = require('../model/Jobs')
+
+router.get('/test', async (req,res,next)=>{
+
+ 
+    try{
+        const stofwk = moment().startOf('week')
+        const endofwk = moment().endOf('week')
+
+        const stfwk =  ymd(stofwk)
+        const enofwk =  ymd(endofwk)
+ 
+        const ds = new Date()
+        const ss = ds.getMonth()+1
+        const dc = (Number(ss) < 10)? "0"+ss : ss
+        const dd = Number(dc)
+
+        const jb = await Jobs.find({date : new Date(dd)}).sort({date: 1})
+        if(jb){
+            console.log(dd)
+            res.json({success:true, mess: jb}) 
+        }
+    } 
+    catch(err){
+        next(err)
+    }
+})
+
+
+
 
 /*########################################
 BEGIN HISTORY
