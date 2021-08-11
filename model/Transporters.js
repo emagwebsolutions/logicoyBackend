@@ -13,7 +13,21 @@ const TransportersSchema = new mongoose.Schema({
         required: [true,"Transporter contact field required!"],
         minlength: 10
     },
+    tcontacttwo: {
+        type: String,
+        minlength: 10
+    },
+    tcontactthree: {
+        type: String,
+        minlength: 10
+    },
     contactp: {
+        type: String
+    },
+    contactptwo: {
+        type: String
+    },
+    contactpthree: {
         type: String
     },
     date: {
@@ -23,7 +37,8 @@ const TransportersSchema = new mongoose.Schema({
     creatorid: String,
     createdby: String,
     creatorphone: String
-})
+},
+{ timestamps: true },)
 
 TransportersSchema.methods.capitalize = function(){
     this.transporter = this.transporter.toUpperCase()

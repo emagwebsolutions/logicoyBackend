@@ -17,14 +17,12 @@ const TruckSchema = new mongoose.Schema({
         type: String,
         required: [true,"Truck number field required!"]
     },
-    date: {
-        type: Date,
-        default: Date.now
-    },
     creatorid: String,
     createdby: String,
     creatorphone: String
-})
+},
+{ timestamps: true },
+)
 
 TruckSchema.methods.capitalize = function(){
     this.transporter = this.transporter.toUpperCase()

@@ -5,6 +5,8 @@ const Trucks = require('../model/Trucks')
 const Transporters = require('../model/Transporters')
 const History = require('../model/History')
 const ErrorResponse = require('../error/errorResponse')
+const moment = require("moment")
+const ymd = require("../middleware/DateFormats")
 
 /*#############################################
 BEGIN TRANSPORTERS CRUD OPERATIONS
@@ -25,7 +27,11 @@ exports.addtransporters = async (req,res,next)=>{
         transporter,
         email,
         tcontact,
+        tcontacttwo,
+        tcontactthree,
         contactp,
+        contactptwo,
+        contactpthree,
         creatorid,
         createdby,
         creatorphone
@@ -54,10 +60,46 @@ exports.addtransporters = async (req,res,next)=>{
     }
 
 
-    //Validate contact person 
+    //Validate contact person One
     if(contactp) {
         if(!contactp.match(/^[-_ a-zA-Z0-9]+$/)){
            res.json({success: false, mess : 'Valid Contact person required!'})
+           return 
+        }
+    }
+
+    
+
+
+    //Validate contact person Two
+    if(tcontacttwo) {
+        if(!tcontacttwo.match(/^[-_ a-zA-Z0-9]+$/)){
+            res.json({success: false, mess : 'Valid Contact number two required!'})
+            return 
+        }
+    }
+
+    //Validate contact person Two
+    if(contactptwo) {
+        if(!contactptwo.match(/^[-_ a-zA-Z0-9]+$/)){
+           res.json({success: false, mess : 'Valid Contact person two required!'})
+           return 
+        }
+    }
+
+
+    //Validate contact person Three
+    if(tcontactthree) {
+        if(!tcontactthree.match(/^[-_ a-zA-Z0-9]+$/)){
+           res.json({success: false, mess : 'Valid Contact number three required!'})
+           return 
+        }
+    }
+
+    //Validate contact person Three
+    if(contactpthree) {
+        if(!contactpthree.match(/^[-_ a-zA-Z0-9]+$/)){
+           res.json({success: false, mess : 'Valid Contact person three required!'})
            return 
         }
     }
@@ -68,7 +110,11 @@ exports.addtransporters = async (req,res,next)=>{
             transporter,
             email,
             tcontact,
+            tcontacttwo,
+            tcontactthree,
             contactp,
+            contactptwo,
+            contactpthree,
             creatorid,
             createdby,
             creatorphone
@@ -86,11 +132,61 @@ exports.addtransporters = async (req,res,next)=>{
         email,
         tcontact,
         contactp,
+        tcontacttwo,
+        contactptwo,
+        tcontactthree,
+        contactpthree,
         id,
         creatorid,
         createdby,
         creatorphone
     } = req.body
+
+
+    
+    //Validate contact person One
+    if(contactp) {
+        if(!contactp.match(/^[-_ a-zA-Z0-9]+$/)){
+           res.json({success: false, mess : 'Valid Contact person required!'})
+           return 
+        }
+    }
+
+    
+
+
+    //Validate contact person Two
+    if(tcontacttwo) {
+        if(!tcontacttwo.match(/^[-_ a-zA-Z0-9]+$/)){
+            res.json({success: false, mess : 'Valid Contact number two required!'})
+            return 
+        }
+    }
+
+    //Validate contact person Two
+    if(contactptwo) {
+        if(!contactptwo.match(/^[-_ a-zA-Z0-9]+$/)){
+           res.json({success: false, mess : 'Valid Contact person two required!'})
+           return 
+        }
+    }
+
+
+    //Validate contact person Three
+    if(tcontactthree) {
+        if(!tcontactthree.match(/^[-_ a-zA-Z0-9]+$/)){
+           res.json({success: false, mess : 'Valid Contact number three required!'})
+           return 
+        }
+    }
+
+    //Validate contact person Three
+    if(contactpthree) {
+        if(!contactpthree.match(/^[-_ a-zA-Z0-9]+$/)){
+           res.json({success: false, mess : 'Valid Contact person three required!'})
+           return 
+        }
+    }
 
     try{
         const user = await Transporters.findByIdAndUpdate(id, {
@@ -98,6 +194,10 @@ exports.addtransporters = async (req,res,next)=>{
             email,
             tcontact,
             contactp,
+            tcontacttwo,
+            contactptwo,
+            tcontactthree,
+            contactpthree,
             creatorid,
             createdby,
             creatorphone
@@ -411,6 +511,7 @@ exports.getjobs = async (req,res,next)=>{
 exports.addjobs = async (req,res,next) => {
 const {
     fullname,
+    customer,
     transporter,
     tcontact,
     bags,
@@ -450,6 +551,7 @@ try{
 
     const jobsp = await Jobs.create({
         fullname,
+        customer,
         transporter,
         tcontact,
         bags,
@@ -516,6 +618,7 @@ exports.editjobs = async (req,res,next)=>{
 
     const {
         fullname,
+        customer,
         transporter,
         tcontact,
         bags,
@@ -553,11 +656,10 @@ if(fuelstation){
 END FUEL AND FUEL STATION VALIDATION
 --------------------------------------*/
 
-
-
     try{
         const jobsp = await Jobs.findByIdAndUpdate(id, {
             fullname,
+            customer,
             transporter,
             tcontact,
             bags,
@@ -628,6 +730,74 @@ exports.gethistory = async function gethistory(req,res,next){
         console.log(err)
     }
 }
+
+exports.getchartdata = async (req,res,next)=>{
+    const std = moment().startOf("week")
+    const end = moment().endOf("week")
+    const startdate = new Date(std)
+    const enddate = new Date(end)
+    try{
+      const data = await Jobs.find({date : {$gte: new Date(startdate), $lte: new Date(enddate)} })
+      if(res){
+        res.json({success:true, output:data})
+      }
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+exports.gettottrips = async (req,res,next)=>{
+    const std = moment().startOf("month")
+    const end = moment().endOf("month")
+    const startdate = new Date(std)
+    const enddate = new Date(end)
+    try{
+      const data = await Jobs.find({date : {$gte: new Date(startdate), $lte: new Date(enddate)} }).countDocuments()
+      if(res){
+        res.json({success:true, output:data})
+      }
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+exports.gettottransp = async (req,res,next)=>{
+    const std = moment().startOf("month")
+    const end = moment().endOf("month")
+    const startdate = new Date(std)
+    const enddate = new Date(end)
+    try{
+      const data = await Transporters.find({date : {$gte: new Date(startdate), $lte: new Date(enddate)} }).countDocuments()
+      if(res){
+          res.json({success:true, output:data})
+      }
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+exports.gettottrucks = async (req,res,next)=>{
+    const std = moment().startOf("month")
+    const end = moment().endOf("month")
+    const startdate = new Date(std)
+    const enddate = new Date(end)
+    try{
+      const data = await Trucks.find({date : {$gte: new Date(startdate), $lte: new Date(enddate)} }).countDocuments()
+      if(res){
+        res.json({success:true, output:data})
+      }
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+
+
 /*#############################################
 END HISTORY
 #############################################*/
+
+
+

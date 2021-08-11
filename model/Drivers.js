@@ -11,17 +11,13 @@ const DriverSchema = new mongoose.Schema({
         required: [true,"Client name field required!"]
     },
     license: {
-        type: String,
-        require: [true,"Driver License field required!"]
-    },
-    date: {
-        type: Date,
-        default: Date.now
+        type: String
     },
     creatorid: String,
     createdby: String,
     creatorphone: String
-})
+},
+{ timestamps: true },)
 
 DriverSchema.methods.capitalize = function(){
     this.transporter = this.transporter.toUpperCase()

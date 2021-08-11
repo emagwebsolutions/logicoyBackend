@@ -227,11 +227,11 @@ exports.DriversValidate = [
   }),
 
   //LICENSE validation
-  check('license')
-  .escape()
-  .notEmpty()
-  .withMessage('License field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+  // check('license')
+  // .escape()
+  // .notEmpty()
+  // .withMessage('License field required')
+  // .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
 ]
 /*####################################
@@ -279,11 +279,11 @@ exports.EditDriversValidate = [
   }),
 
   //LICENSE validation
-  check('license')
-  .escape()
-  .notEmpty()
-  .withMessage('License field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+  // check('license')
+  // .escape()
+  // .notEmpty()
+  // .withMessage('License field required')
+  // .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
 ]
 /*####################################
@@ -469,9 +469,9 @@ exports.TransValidate = [
   //Dcontact validation
   check('tcontact')
   .notEmpty()
-  .withMessage('Contact field required!')
+  .withMessage('Contact number one field required!')
   .isMobilePhone()
-  .withMessage('Valid contact number required!'),
+  .withMessage('Valid contact number one required!'),
   
   //Check if phone exists
   check('tcontact').custom((val,{req})=>{
@@ -481,7 +481,7 @@ exports.TransValidate = [
             reject(new Error('Server Error'))
           }
           if(Boolean(res)) {
-            reject(new Error('Contact already in use'))
+            reject(new Error('Contact one already in use'))
           }
           resolve(true)
         });
@@ -512,7 +512,7 @@ exports.EditTransValidate = [
   .notEmpty()
   .withMessage('Contact field required!')
   .isMobilePhone()
-  .withMessage('Valid contact number required!'),
+  .withMessage('Valid contact number one required!'),
 
   //Check if phone exists
   check('tcontact').custom((val,{req})=>{
@@ -524,7 +524,7 @@ exports.EditTransValidate = [
             reject(new Error('Server Error'))
           }
           if(trans.length > 0) {
-            reject(new Error('Contact already in use'))
+            reject(new Error('Contact number one already in use'))
           }
           resolve(true)
         });
@@ -548,6 +548,15 @@ exports.JobsValidate = [
   .notEmpty()
   .withMessage('Client\'s Name field required')
   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+
+  //Customer Validation
+  check('customer')
+  .escape()
+  .notEmpty()
+  .withMessage('Customer\'s Name field required')
+  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
 
   //Transporter Validation
   check('transporter')
@@ -633,6 +642,13 @@ exports.EditJobsValidate = [
  .notEmpty()
  .withMessage('Client\'s Name field required')
  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+ //Customer Validation
+ check('customer')
+ .escape()
+.notEmpty()
+.withMessage('Customer\'s Name field required')
+.matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
  //Transporter Validation
  check('transporter')

@@ -5,6 +5,10 @@ const JobsSchema = new mongoose.Schema({
         type: String,
         required: [true,"Client name field required!"]
     },
+    customer: {
+        type: String,
+        required: [true,"Customer name field required!"]
+    },
     transporter: {
         type: String,
         required: [true,"Transporter field required!"]
@@ -56,7 +60,8 @@ const JobsSchema = new mongoose.Schema({
     creatorid: String,
     createdby: String,
     creatorphone: String
-})
+},
+{ timestamps: true },)
 
 JobsSchema.methods.capitalize = function(){
     this.transporter = this.transporter.toUpperCase()
