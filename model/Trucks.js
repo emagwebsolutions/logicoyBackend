@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
 
 const TruckSchema = new mongoose.Schema({
-    truckname: {
-        type: String,
-        required: [true,"Truck name field required!"]
-    },
     tcontact: {
         type: String,
         required: [true,"Transporter contact field required!"]

@@ -324,7 +324,6 @@ exports.gettrucks = async (req,res,next)=>{
 
 exports.addtrucks = async (req,res,next)=>{
     const {
-        truckname,
         tcontact,
         transporter,
         trucknumber,
@@ -337,7 +336,7 @@ exports.addtrucks = async (req,res,next)=>{
 
     try{
         const user = await Trucks.create({
-            truckname,
+            
             tcontact,
             transporter,
             trucknumber,
@@ -354,7 +353,7 @@ exports.addtrucks = async (req,res,next)=>{
 
  exports.edittrucks = async (req,res,next)=>{
     const {
-        truckname,
+        
         tcontact,
         transporter,
         trucknumber,
@@ -366,7 +365,7 @@ exports.addtrucks = async (req,res,next)=>{
   
     try{
         const user = await Trucks.findByIdAndUpdate(id, {
-            truckname,
+            
             tcontact,
             transporter,
             trucknumber,

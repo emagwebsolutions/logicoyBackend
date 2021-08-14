@@ -297,13 +297,6 @@ exports.EditDriversValidate = [
 ####################################*/
 exports.TrucksValidate = [
 
-  //Role validation
-  check('truckname')
-  .escape()
-  .notEmpty()
-  .withMessage('Truck name field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-
     //Dcontact validation
     check('tcontact')
     .notEmpty()
@@ -353,13 +346,6 @@ exports.TrucksValidate = [
 *BEGIN EDIT TRUCKS REGISTRATION VALIDATION
 ####################################*/
 exports.EditTrucksValidate = [
-
-  //Role validation
-  check('truckname')
-  .escape()
-  .notEmpty()
-  .withMessage('Truck name field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
   
   //Dcontact validation
   check('tcontact')
