@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const {gethistory,register,users,edituser,deleteuser,addjobs,getjobs,editjobs,deletejobs,gettransporters,addtransporters,deletetransporters,edittransporters,getdrivers, adddrivers,deletedrivers, gettrucks, addtrucks,edittrucks,deletetrucks,editdrivers,gettottrips,getchartdata,gettottransp,gettottrucks} = require('../controller/public')
+const {gethistory,register,users,edituser,deleteuser,addjobs,getjobs,editjobs,deletejobs,gettransporters,addtransporters,deletetransporters,edittransporters,getdrivers, adddrivers,deletedrivers, gettrucks, addtrucks,edittrucks,deletetrucks,editdrivers,gettottrips,getchartdata,getlinechartdata,gettottransp,gettotdrivers,gettottrucks,addfuelrate,getfuelrates,editfuelrate,deletefuelrate,getcargorates,addcargorate,editcargorate,deletecargorate} = require('../controller/public')
 
 const validationsres = require('../middleware/validationsres')
-const {RegValidate,EditRegValidate,TrucksValidate, EditTrucksValidate,DriversValidate, EditDriversValidate,TransValidate,EditTransValidate,JobsValidate,EditJobsValidate} = require('../middleware/inputvalidations')
+const {RegValidate,EditRegValidate,TrucksValidate, EditTrucksValidate,DriversValidate, EditDriversValidate,TransValidate,EditTransValidate,JobsValidate,EditJobsValidate,FuelValidate,EditFuelValidate,CargoValidate,EditCargoValidate
+} = require('../middleware/inputvalidations')
 
 /*########################################
 BEGIN HISTORY
@@ -11,7 +12,11 @@ BEGIN HISTORY
 router.get('/gethistory', gethistory)
 router.get('/gettottrips', gettottrips)
 router.get('/getchartdata', getchartdata)
+router.get('/getlinechartdata', getlinechartdata)
 router.get('/gettottransp', gettottransp)
+
+router.get('/gettotdrivers', gettotdrivers)
+
 router.get('/gettottrucks', gettottrucks)
 /*########################################
 END HISTORY
@@ -76,6 +81,30 @@ END TRANSPORTERS CRUD OPERATIONS
 
 
 
+
+
+/*########################################
+BEGIN CARGO CRUD OPERATIONS
+########################################*/
+router.post('/addcargorate', CargoValidate, validationsres, addcargorate)
+router.get('/getcargorates', getcargorates)
+router.put('/editcargorate', EditCargoValidate, validationsres, editcargorate)
+router.delete('/deletecargorate/:id', deletecargorate)
+/*########################################
+END CARGO CRUD OPERATIONS
+########################################*/
+
+
+/*########################################
+BEGIN FUEL CRUD OPERATIONS
+########################################*/
+router.post('/addfuelrate', FuelValidate, validationsres, addfuelrate)
+router.get('/getfuelrates', getfuelrates)
+router.put('/editfuelrate', EditFuelValidate, validationsres, editfuelrate)
+router.delete('/deletefuelrate/:id', deletefuelrate)
+/*########################################
+END FUEL CRUD OPERATIONS
+########################################*/
 
 
 module.exports = router

@@ -3,6 +3,8 @@ const Drivers = require('../model/Drivers')
 const Trucks = require('../model/Trucks')
 const Transporters = require('../model/Transporters')
 const Jobs = require('../model/Jobs')
+const Fuelrates = require('../model/Fuelrates')
+const Cargorates = require('../model/Cargorates')
 const {check} = require('express-validator')
 
 // isLength()
@@ -704,4 +706,216 @@ check('trucknumber')
 /*####################################
 *END EDIT JOBS REGISTRATION VALIDATION
 ####################################*/
+
+
+
+
+
+
+
+
+/*####################################
+*BEGIN FUEL RATES VALIDATION
+####################################*/
+exports.FuelValidate = [
+
+  //Fuel litres validation
+  check('litre')
+  .notEmpty()
+  .withMessage('Litres field required!')
+  .isNumeric()
+  .withMessage('Valid litre required!'),
+
+    //Fuel Validation
+    check('fuelstation')
+    .escape()
+    .notEmpty()
+    .withMessage('Fuel station field required')
+    .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+  
+
+  //Fuel station validation
+  check('fuelstation').custom((fuelstation,{req})=>{
+    return new Promise((resolve, reject) => {
+      Fuelrates.findOne({fuelstation}, function(err, res){
+          if(err) {
+            reject(new Error('Server Error'))
+          }
+          if(Boolean(res)) {
+            reject(new Error('Fuel station already exist!'))
+          }
+          resolve(true)
+        });
+    })
+})
+
+]
+/*####################################
+*END FUEL RATES VALIDATION
+####################################*/
+
+
+
+/*####################################
+*BEGIN EDIT FUEL VALIDATION
+####################################*/
+exports.EditFuelValidate = [
+
+  //Fuel litres validation
+  check('litre')
+  .notEmpty()
+  .withMessage('Litres field required!')
+  .isNumeric()
+  .withMessage('Valid litre required!'),
+
+  //Fuel Validation
+  check('fuelstation')
+  .escape()
+  .notEmpty()
+  .withMessage('Fuel station field required')
+  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+  //Fuel station validation
+  check('fuelstation').custom((val,{req})=>{
+    return new Promise((resolve, reject) => {
+      Fuelrates.find({$and: [{fuelstation: {$eq : val}},{_id: {$ne: id}}]}, function(err, res){
+          if(err) {
+            reject(new Error('Server Error'))
+          }
+          if(Boolean(res)) {
+            reject(new Error('Fuel station already exist!'))
+          }
+          resolve(true)
+        });
+    })
+})
+ 
+ ]
+ /*####################################
+ *END EDIT FUEL VALIDATION
+ ####################################*/
+
+
+/*####################################
+*BEGIN CARGOR VALIDATION
+####################################*/
+exports.CargoValidate = [
+
+  //Fullname Validation
+  check('owner')
+  .escape()
+  .notEmpty()
+  .withMessage('Cargo owner field required')
+  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+
+  //Customer Validation
+  check('type')
+  .escape()
+  .notEmpty()
+  .withMessage('Type field required')
+  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+
+  //Destination Validation
+  check('destination')
+  .escape()
+  .notEmpty()
+  .withMessage('Destination field required')
+  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+
+
+  //Destination Validation
+  check('destination').custom((val,{req})=>{
+    return new Promise((resolve, reject) => {
+      Cargorates.findOne({destination: val}, function(err, res){
+          if(err) {
+            reject(new Error('Server Error'))
+          }
+          if(Boolean(res)) {
+            reject(new Error('Destination already exist!'))
+          }
+          resolve(true)
+        });
+    })
+}),
+
+  
+  //Transporter contact validation
+  check('rate')
+  .notEmpty()
+  .withMessage('Rate field required!')
+  .isNumeric()
+  .withMessage('Valid rate field required!')
+
+]
+/*####################################
+*END CARGO VALIDATION
+####################################*/
+
+
+
+/*####################################
+*BEGIN EDIT CARGOR VALIDATION
+####################################*/
+exports.EditCargoValidate = [
+    //Fullname Validation
+    check('owner')
+    .escape()
+    .notEmpty()
+    .withMessage('Cargo owner field required')
+    .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+  
+  
+    //Customer Validation
+    check('type')
+    .escape()
+    .notEmpty()
+    .withMessage('Type field required')
+    .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+  
+
+    //Destination Validation
+    check('destination')
+    .escape()
+    .notEmpty()
+    .withMessage('Destination field required')
+    .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+  
+
+    //Destination Validation
+    check('destination').custom((val,{req})=>{
+      return new Promise((resolve, reject) => {
+        Cargorates.find({$and: [{destination: {$eq : val}},{_id: {$ne: id}}]}, function(err, res){
+            if(err) {
+              reject(new Error('Server Error'))
+            }
+            if(Boolean(res)) {
+              reject(new Error('Destination already exist!'))
+            }
+            resolve(true)
+          });
+      })
+  }),
+  
+    
+    //Transporter contact validation
+    check('rate')
+    .notEmpty()
+    .withMessage('Rate field required!')
+    .isNumeric()
+    .withMessage('Valid rate field required!')
+ 
+ ]
+ /*####################################
+ *END EDIT CARGO VALIDATION
+ ####################################*/
+
+
+
+
+
+
+
+
 

@@ -2,6 +2,8 @@ const Users = require('../model/Users')
 const Jobs = require('../model/Jobs')
 const Drivers = require('../model/Drivers')
 const Trucks = require('../model/Trucks')
+const Cargorates = require('../model/Cargorates')
+const Fuelrates = require('../model/Fuelrates')
 const Transporters = require('../model/Transporters')
 const History = require('../model/History')
 const ErrorResponse = require('../error/errorResponse')
@@ -746,6 +748,28 @@ exports.getchartdata = async (req,res,next)=>{
     }
 }
 
+
+
+
+exports.getlinechartdata = async (req,res,next)=>{
+    const std = moment().startOf("year")
+    const end = moment().endOf("year")
+    const startdate = new Date(std)
+    const enddate = new Date(end)
+    try{
+      const data = await Jobs.find({date : {$gte: new Date(startdate), $lte: new Date(enddate)} })
+      if(res){
+        res.json({success:true, output:data})
+      }
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+
+
+
 exports.gettottrips = async (req,res,next)=>{
     const std = moment().startOf("month")
     const end = moment().endOf("month")
@@ -761,6 +785,28 @@ exports.gettottrips = async (req,res,next)=>{
         console.log(err)
     }
 }
+
+
+
+
+exports.gettotdrivers = async (req,res,next)=>{
+    const std = moment().startOf("month")
+    const end = moment().endOf("month")
+    const startdate = new Date(std)
+    const enddate = new Date(end)
+    try{
+      const data = await Drivers.find({date : {$gte: new Date(startdate), $lte: new Date(enddate)} }).countDocuments()
+      if(res){
+          res.json({success:true, output:data})
+      }
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+
+
 exports.gettottransp = async (req,res,next)=>{
     const std = moment().startOf("month")
     const end = moment().endOf("month")
@@ -797,6 +843,227 @@ exports.gettottrucks = async (req,res,next)=>{
 /*#############################################
 END HISTORY
 #############################################*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*#############################################
+BEGIN CARGO CRUD OPERATIONS
+#############################################*/
+
+
+exports.getcargorates = async (req,res,next)=>{
+    try{
+        const cargorates = await Cargorates.find().sort({"_id":-1})
+        res.json({success:true, cargorates})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+
+
+
+exports.addcargorate = async (req,res,next)=>{
+    const {
+        owner,
+        type,
+        destination,
+        rate
+    } = req.body
+
+
+    try{
+        const user = await Cargorates.create({
+            owner,
+            type,
+            destination,
+            rate
+        })
+        res.json({success:true,mess:"Cargo rate added successfully!"})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+
+
+
+ exports.editcargorate = async (req,res,next)=>{
+    const {
+        owner,
+        type,
+        destination,
+        rate,
+        id
+    } = req.body
+  
+    try{
+        const user = await Cargorates.findByIdAndUpdate(id, {
+            owner,
+            type,
+            destination,
+            rate
+        })
+        res.json({success:true,mess:"Cargo rate details updated!"})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+
+
+exports.deletecargorate = async (req,res,next)=>{
+    const id = req.params.id
+    try{
+        const user = await Cargorates.findByIdAndDelete(id)
+        res.json({success: true, mess: id})
+    }
+    catch(err){
+        next(err)
+    }
+}
+/*#############################################
+END CARGO CRUD OPERATIONS
+#############################################*/
+
+
+
+
+
+
+/*#############################################
+BEGIN FUEL RATES CRUD OPERATIONS
+#############################################*/
+
+
+exports.getfuelrates = async (req,res,next)=>{
+    try{
+        const fuelrates = await Fuelrates.find().sort({"_id":-1})
+        res.json({success:true, fuelrates})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+
+
+
+exports.addfuelrate = async (req,res,next)=>{
+    const {
+        litre,
+        fuelstation
+    } = req.body
+
+
+    try{
+        const user = await Fuelrates.create({
+            litre,
+            fuelstation
+        })
+        res.json({success:true,mess:"Cargo rate added successfully!"})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+
+
+ exports.editfuelrate = async (req,res,next)=>{
+    const {
+        litre,
+        fuelstation,
+        id
+    } = req.body
+  
+    try{
+         await Fuelrates.findByIdAndUpdate(id, {
+            litre,
+            fuelstation
+        })
+        res.json({success:true,mess:"Fuel rate details updated!"})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+
+
+exports.deletefuelrate = async (req,res,next)=>{
+    const id = req.params.id
+    try{
+        const user = await Fuelrates.findByIdAndDelete(id)
+        res.json({success: true, mess: id})
+    }
+    catch(err){
+        next(err)
+    }
+}
+/*#############################################
+END FUEL RATES CRUD OPERATIONS
+#############################################*/
+
+
+
+
+
+
 
 
 
