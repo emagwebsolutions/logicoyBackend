@@ -30,10 +30,6 @@ const TransportersSchema = new mongoose.Schema({
     contactpthree: {
         type: String
     },
-    date: {
-        type: Date,
-        default: Date.now
-    },
     creatorid: String,
     createdby: String,
     creatorphone: String

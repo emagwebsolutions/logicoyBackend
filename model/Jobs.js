@@ -5,10 +5,7 @@ const JobsSchema = new mongoose.Schema({
         type: String,
         required: [true,"Client name field required!"]
     },
-    customer: {
-        type: String,
-        required: [true,"Customer name field required!"]
-    },
+    customer: String,
     transporter: {
         type: String,
         required: [true,"Transporter field required!"]
@@ -39,10 +36,7 @@ const JobsSchema = new mongoose.Schema({
         required: [true,"Driver name field required!"],
         minlength: 10
     },
-    license: {
-        type: String,
-        require: [true,"Driver License field required!"]
-    },
+    license: String,
     fuel: {
         type: String
     },
@@ -53,6 +47,7 @@ const JobsSchema = new mongoose.Schema({
         type: Date,
         require: [true,"Date field required!"]
     },
+    type2 : String,
     approved: {
         type: String,
         default: "No"

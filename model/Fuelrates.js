@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 
 const Fuelrates = new mongoose.Schema({
     litre: Number,
-    fuelstation: String
+    fuelstation: String,
+    rate: String
 },
 { timestamps: true },)
 

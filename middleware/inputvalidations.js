@@ -112,6 +112,49 @@ exports.RegValidate = [
 
 
 
+
+
+
+/*####################################
+*BEGIN EDIT PASSWORD
+####################################*/
+exports.PassValidate = [
+
+  //Password validation
+  check('password').trim().isLength({min: 6}).withMessage('Password must be 6 characters long!'),
+
+  //Check if Passwords match
+  check('repassword').custom((val,{req})=>{
+        return new Promise((resolve, reject) => {
+              if(val !== req.body.password) {
+                reject(new Error('Passwords do not match!'))
+              }
+              else{
+                resolve(true)
+              } 
+        })
+  })
+
+]
+/*####################################
+*END EDIT PASSWORD
+####################################*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*####################################
 *BEGIN EDIT USERS REGISTRATION VALIDATION
 ####################################*/
@@ -129,7 +172,6 @@ exports.EditRegValidate = [
   check('phone').custom((val,{req})=>{
     const cemail = req.body.email
     return new Promise((resolve, reject) => {
-      console.log(val)
         Users.find({$and: [{phone: {$eq : val}},{email: {$ne: cemail}}]},
           function(err, user){
           
@@ -226,15 +268,7 @@ exports.DriversValidate = [
           resolve(true)
         });
     })
-  }),
-
-  //LICENSE validation
-  // check('license')
-  // .escape()
-  // .notEmpty()
-  // .withMessage('License field required')
-  // .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-
+  })
 ]
 /*####################################
 *END USERS REGISTRATION VALIDATION
@@ -264,7 +298,6 @@ exports.EditDriversValidate = [
   check('dcontact').custom((val,{req})=>{
     const id = req.body.id
     return new Promise((resolve, reject) => {
-      console.log(val)
     Drivers.find({$and: [{dcontact: {$eq : val}},{_id: {$ne: id}}]},
           function(err,driv){
           
@@ -278,14 +311,7 @@ exports.EditDriversValidate = [
         });
     })
 
-  }),
-
-  //LICENSE validation
-  // check('license')
-  // .escape()
-  // .notEmpty()
-  // .withMessage('License field required')
-  // .matches(/^[A-Za-z0-9 .,'!&-]+$/),
+  })
 
 ]
 /*####################################
@@ -534,17 +560,8 @@ exports.JobsValidate = [
   check('fullname')
   .escape()
   .notEmpty()
-  .withMessage('Client\'s Name field required')
+  .withMessage('Owner field required')
   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-
-
-  //Customer Validation
-  check('customer')
-  .escape()
-  .notEmpty()
-  .withMessage('Customer\'s Name field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-
 
   //Transporter Validation
   check('transporter')
@@ -560,12 +577,11 @@ exports.JobsValidate = [
   .isMobilePhone()
   .withMessage('Valid transporter contact number required!'),
 
-
   //Bags Validation
   check('bags')
   .escape()
   .notEmpty()
-  .withMessage('Bags field required!')
+  .withMessage('Load field required!')
   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
   //Destination Validation
@@ -597,16 +613,7 @@ exports.JobsValidate = [
   .withMessage('Valid contact number required!'),
 
 
-  //LICENSE validation
-  check('license')
-  .escape()
-  .notEmpty()
-  .withMessage('License field required')
-  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-
-
-
-  //LICENSE validation
+  //Date validation
   check('date')
   .notEmpty()
   .withMessage('Date field required')
@@ -628,15 +635,8 @@ exports.EditJobsValidate = [
  check('fullname')
  .escape()
  .notEmpty()
- .withMessage('Client\'s Name field required')
+ .withMessage('Owner field required')
  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-
- //Customer Validation
- check('customer')
- .escape()
-.notEmpty()
-.withMessage('Customer\'s Name field required')
-.matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
  //Transporter Validation
  check('transporter')
@@ -657,7 +657,7 @@ exports.EditJobsValidate = [
  check('bags')
  .escape()
  .notEmpty()
- .withMessage('Bags field required!')
+ .withMessage('Load field required!')
  .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
  //Destination Validation
@@ -688,16 +688,7 @@ check('trucknumber')
  .isMobilePhone()
  .withMessage('Valid contact number required!'),
 
-
- //LICENSE validation
- check('license')
- .escape()
- .notEmpty()
- .withMessage('License field required')
- .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-
-
- //LICENSE validation
+ //Date validation
  check('date')
  .notEmpty()
  .withMessage('Date field required'),
@@ -747,7 +738,13 @@ exports.FuelValidate = [
           resolve(true)
         });
     })
-})
+}),
+  //Rate validation
+  check('rate')
+  .notEmpty()
+  .withMessage('Rate field required!')
+  .isNumeric()
+  .withMessage('Valid rate field required!')
 
 ]
 /*####################################
@@ -778,17 +775,23 @@ exports.EditFuelValidate = [
   //Fuel station validation
   check('fuelstation').custom((val,{req})=>{
     return new Promise((resolve, reject) => {
-      Fuelrates.find({$and: [{fuelstation: {$eq : val}},{_id: {$ne: id}}]}, function(err, res){
+      Fuelrates.find({$and: [{fuelstation: {$eq : val}},{_id: {$ne: req.body.id}}]}, function(err, res){
           if(err) {
             reject(new Error('Server Error'))
           }
-          if(Boolean(res)) {
+          if(res.length > 0) {
             reject(new Error('Fuel station already exist!'))
           }
           resolve(true)
         });
     })
-})
+}),
+  //Rate validation
+  check('rate')
+  .notEmpty()
+  .withMessage('Rate field required!')
+  .isNumeric()
+  .withMessage('Valid rate field required!')
  
  ]
  /*####################################
@@ -809,7 +812,7 @@ exports.CargoValidate = [
   .matches(/^[A-Za-z0-9 .,'!&-]+$/),
 
 
-  //Customer Validation
+  //Type Validation
   check('type')
   .escape()
   .notEmpty()
@@ -828,7 +831,7 @@ exports.CargoValidate = [
   //Destination Validation
   check('destination').custom((val,{req})=>{
     return new Promise((resolve, reject) => {
-      Cargorates.findOne({destination: val}, function(err, res){
+      Cargorates.findOne({$and: [{destination: val},{owner: req.body.owner}]}, function(err, res){ 
           if(err) {
             reject(new Error('Server Error'))
           }
@@ -841,7 +844,7 @@ exports.CargoValidate = [
 }),
 
   
-  //Transporter contact validation
+  //Rate validation
   check('rate')
   .notEmpty()
   .withMessage('Rate field required!')
@@ -867,7 +870,7 @@ exports.EditCargoValidate = [
     .matches(/^[A-Za-z0-9 .,'!&-]+$/),
   
   
-    //Customer Validation
+    //Type Validation
     check('type')
     .escape()
     .notEmpty()
@@ -881,22 +884,6 @@ exports.EditCargoValidate = [
     .notEmpty()
     .withMessage('Destination field required')
     .matches(/^[A-Za-z0-9 .,'!&-]+$/),
-  
-
-    //Destination Validation
-    check('destination').custom((val,{req})=>{
-      return new Promise((resolve, reject) => {
-        Cargorates.find({$and: [{destination: {$eq : val}},{_id: {$ne: id}}]}, function(err, res){
-            if(err) {
-              reject(new Error('Server Error'))
-            }
-            if(Boolean(res)) {
-              reject(new Error('Destination already exist!'))
-            }
-            resolve(true)
-          });
-      })
-  }),
   
     
     //Transporter contact validation
